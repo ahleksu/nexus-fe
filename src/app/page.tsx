@@ -17,7 +17,7 @@ import {
   MessageSquareText,
   Sparkles,
 } from "lucide-react";
-import { useRouter } from "next/navigation"; // <-- use this import for App Router
+import { useRouter } from "next/navigation"; 
 
 export default function Home() {
   const router = useRouter();
