@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Skeleton } from "@/components/ui/skeleton";
 import {useFetchDocuments} from "@/app/company/document/hooks/useFetchDocument";
+import {CreateDocumentDialog} from "@/app/company/document/component/CreateDocumentDialog";
 
 const DocumentTableSection = () => {
     const { documents, loading, error } = useFetchDocuments();
@@ -17,7 +18,7 @@ const DocumentTableSection = () => {
         <div className="flex flex-col w-full gap-4">
             <div className="flex w-full justify-between items-center">
                 <h2 className="text-lg font-bold">Documents</h2>
-                <Button variant="outline">Add Document</Button>
+                <CreateDocumentDialog/>
             </div>
 
             <Table>
