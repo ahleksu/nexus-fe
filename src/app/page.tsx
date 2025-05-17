@@ -8,7 +8,7 @@ export default function Home() {
   return (
     <div className="flex min-h-screen flex-col">
       <header className="sticky top-0 z-40 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="container flex h-16 items-center justify-between py-4">
+        <div className="container mx-auto flex h-16 items-center justify-between py-4">
           <div className="flex items-center gap-2">
             <Brain className="h-8 w-8 text-primary" />
             <span className="text-xl font-bold">NEXUS</span>
@@ -45,7 +45,7 @@ export default function Home() {
         {/* Hero Section */}
         <section className="relative overflow-hidden py-20 md:py-32">
           <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-background z-0"></div>
-          <div className="container relative z-10">
+          <div className="container mx-auto relative z-10">
             <div className="grid gap-12 lg:grid-cols-2 lg:gap-8 items-center">
               <div className="flex flex-col gap-6">
                 <h1 className="text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl">
@@ -88,7 +88,7 @@ export default function Home() {
 
         {/* Problem/Solution Section */}
         <section className="py-20 bg-muted/50">
-          <div className="container">
+          <div className="container mx-auto">
             <div className="text-center mb-12">
               <h2 className="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl mb-4">
                 Why NEXUS?
@@ -174,7 +174,7 @@ export default function Home() {
 
         {/* Key Features Section */}
         <section id="features" className="py-20">
-          <div className="container">
+          <div className="container mx-auto">
             <div className="text-center mb-12">
               <h2 className="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl mb-4">
                 Key Features
@@ -250,7 +250,7 @@ export default function Home() {
 
         {/* How It Works Section */}
         <section id="how-it-works" className="py-20 bg-muted/50">
-          <div className="container">
+          <div className="container mx-auto">
             <div className="text-center mb-12">
               <h2 className="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl mb-4">
                 How It Works
@@ -316,7 +316,7 @@ export default function Home() {
 
         {/* Benefits Section */}
         <section id="benefits" className="py-20">
-          <div className="container">
+          <div className="container mx-auto">
             <div className="text-center mb-12">
               <h2 className="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl mb-4">
                 Benefits
@@ -393,7 +393,7 @@ export default function Home() {
 
         {/* CTA Section */}
         <section className="py-20 bg-primary/10">
-          <div className="container">
+          <div className="container mx-auto">
             <div className="max-w-3xl mx-auto text-center">
               <h2 className="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl mb-4">
                 Ready to Transform Your Customer Support?
@@ -420,7 +420,7 @@ export default function Home() {
         </section>
       </main>
       <footer className="border-t py-8 bg-muted/30">
-        <div className="container">
+        <div className="container mx-auto">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <div className="flex items-center gap-2 mb-4 md:mb-0">
               <Brain className="h-6 w-6 text-primary" />
