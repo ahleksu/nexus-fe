@@ -12,6 +12,7 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import {useFetchAgents} from "@/app/company/agent/hooks/useFetchAgents";
 import {Button} from "@/components/ui/button";
+import {CreateAgentDialog} from "@/app/company/agent/component/CreateAgentDialog";
 
 const statusVariantMap = {
     active: "default",
@@ -36,7 +37,7 @@ const AgentTableSection = () => {
         <div className="flex flex-col w-full gap-4">
             <div className="flex w-full justify-between items-center">
                 <h2 className="text-md font-bold">Agents</h2>
-                <Button variant="outline">Add Agent</Button>
+                <CreateAgentDialog/>
             </div>
 
             <Table>
