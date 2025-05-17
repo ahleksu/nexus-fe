@@ -16,6 +16,5 @@ export default function Agent() {
           </div>
         </main>
       </SidebarProvider>
-
   );
 }

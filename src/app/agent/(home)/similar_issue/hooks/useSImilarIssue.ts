@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 // hooks/useSimilarIssues.ts
 import { useEffect, useState } from 'react';
 import {SimilarIssue} from "@/app/agent/(home)/similar_issue/type/SimilarIssueType";

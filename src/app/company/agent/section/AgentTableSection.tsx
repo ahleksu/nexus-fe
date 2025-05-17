@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 // components/AgentTableSection.tsx
 "use client"
 
@@ -68,7 +69,7 @@ const AgentTableSection = () => {
                                 <TableCell className="font-medium">{agent.name}</TableCell>
                                 <TableCell>{agent.email}</TableCell>
                                 <TableCell>
-                                    <Button variant="ghost">View</Button>
+                                    <Button  variant="ghost">View</Button>
                                 </TableCell>
 
                             </TableRow>

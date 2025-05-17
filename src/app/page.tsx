@@ -1,10 +1,35 @@
-import Link from "next/link"
-import Image from "next/image"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { ArrowRight, Brain, FileSearch, Lightbulb, MessageSquareText, Sparkles } from "lucide-react"
+"use client";
+import Link from "next/link";
+import Image from "next/image";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  ArrowRight,
+  Brain,
+  FileSearch,
+  Lightbulb,
+  MessageSquareText,
+  Sparkles,
+} from "lucide-react";
+import { useRouter } from "next/navigation"; // <-- use this import for App Router
 
 export default function Home() {
+  const router = useRouter();
+
+  function handleTryDemoClick() {
+    router.push("/company/agent");
+  }
+
+  function handleLoginClick() {
+    router.push("/agent");
+  }
+
   return (
     <div className="flex min-h-screen flex-col">
       <header className="sticky top-0 z-40 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -34,10 +59,10 @@ export default function Home() {
             </Link>
           </nav>
           <div className="flex items-center gap-4">
-            <Button variant="outline" className="hidden md:flex">
+            <Button variant="outline" className="hidden md:flex" onClick={handleLoginClick}>
               Log In
             </Button>
-            <Button>Request a Demo</Button>
+            <Button onClick={handleTryDemoClick}>Try Demo</Button>
           </div>
         </div>
       </header>
@@ -58,7 +83,7 @@ export default function Home() {
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4 mt-4">
                   <Button size="lg" className="w-full sm:w-auto">
-                    Request a Demo
+                    Try Demo
                   </Button>
                   <Button
                     size="lg"
@@ -404,7 +429,7 @@ export default function Home() {
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Button size="lg" className="w-full sm:w-auto">
-                  Request a Demo
+                  Try Demo
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
                 <Button

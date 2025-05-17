@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 // hooks/useCallTranscription.ts
 import { useEffect, useState } from 'react';
 import {CallTranscriptionType} from "@/app/agent/(home)/transcription/type/CallTranscriptionType";

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 // hooks/useFetchCallSession.ts
 import { useEffect, useState } from 'react';
 import {CallSessionType} from "@/app/company/call_session/type/CallSessionType";

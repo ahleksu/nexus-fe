@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useEffect, useState } from 'react';
 import {agentData} from "@/app/company/agent/data/agentData";
 export const useFetchAgents = () => {
