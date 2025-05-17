@@ -14,6 +14,8 @@ import { Skeleton } from "@/components/ui/skeleton";
 import {useFetchAgents} from "@/app/company/agent/hooks/useFetchAgents";
 import {Button} from "@/components/ui/button";
 import {CreateAgentDialog} from "@/app/company/agent/component/CreateAgentDialog";
+import { useRouter } from "next/navigation";
+
 
 const statusVariantMap = {
     active: "default",
@@ -29,6 +31,8 @@ const roleVariantMap = {
 
 const AgentTableSection = () => {
     const { agents, loading, error } = useFetchAgents();
+    const router = useRouter();
+
 
     if (error) {
         return <div className="p-4 text-red-500">{error}</div>;
@@ -69,7 +73,7 @@ const AgentTableSection = () => {
                                 <TableCell className="font-medium">{agent.name}</TableCell>
                                 <TableCell>{agent.email}</TableCell>
                                 <TableCell>
-                                    <Button  variant="ghost">View</Button>
+                                    <Button  variant="ghost" onClick={() => router.push(`/company/agent/${agent.id}/dashboard`)}>View</Button>
                                 </TableCell>
 
                             </TableRow>

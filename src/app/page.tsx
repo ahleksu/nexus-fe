@@ -59,10 +59,10 @@ export default function Home() {
             </Link>
           </nav>
           <div className="flex items-center gap-4">
-            <Button variant="outline" className="hidden md:flex" onClick={handleLoginClick}>
+            <Button variant="outline" className="hidden md:flex cursor-pointer" onClick={handleLoginClick}>
               Log In
             </Button>
-            <Button onClick={handleTryDemoClick}>Try Demo</Button>
+            <Button className="cursor-pointer" onClick={handleTryDemoClick}>Try Demo</Button>
           </div>
         </div>
       </header>
@@ -82,16 +82,17 @@ export default function Home() {
                   team to deliver exceptional customer experiences.
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4 mt-4">
-                  <Button size="lg" className="w-full sm:w-auto">
+                  <Button size="lg" className="w-full sm:w-auto cursor-pointer">
                     Try Demo
                   </Button>
-                  <Button
+                    <Button
+                    asChild
                     size="lg"
                     variant="outline"
                     className="w-full sm:w-auto"
-                  >
-                    Learn More
-                  </Button>
+                    >
+                    <Link href="#why-nexus">Learn More</Link>
+                    </Button>
                 </div>
               </div>
               <div className="relative h-[400px] w-full rounded-lg bg-gradient-to-br from-primary/30 via-primary/20 to-background overflow-hidden">
@@ -112,7 +113,7 @@ export default function Home() {
         </section>
 
         {/* Problem/Solution Section */}
-        <section className="py-20 bg-muted/50">
+        <section id="why-nexus" className="py-20 bg-muted/50">
           <div className="container mx-auto">
             <div className="text-center mb-12">
               <h2 className="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl mb-4">
