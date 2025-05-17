@@ -14,10 +14,10 @@ import {
   Star,
   Target,
 } from "lucide-react";
-import type { DateRange } from "react-day-picker";
+import { DayPicker, type DateRange } from "react-day-picker";
+import "react-day-picker/style.css";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Calendar } from "@/components/ui/calendar";
 import {
   Card,
   CardContent,
@@ -124,8 +124,8 @@ interface AgentKpiDashboardProps {
 }
 
 export function AgentKpiDashboard({ agent, onBack }: AgentKpiDashboardProps) {
-  // Date range state
-  const [date, setDate] = useState<DateRange | undefined>({
+  // Date range state using react-day-picker's DateRange type
+  const [range, setRange] = useState<DateRange | undefined>({
     from: new Date(2025, 3, 17), // April 17, 2025
     to: new Date(2025, 4, 17), // May 17, 2025
   });
@@ -133,38 +133,38 @@ export function AgentKpiDashboard({ agent, onBack }: AgentKpiDashboardProps) {
   // Preset date ranges
   const handlePresetChange = (preset: string) => {
     const today = new Date();
-
     switch (preset) {
       case "last7days":
-        const last7Days = new Date();
-        last7Days.setDate(today.getDate() - 7);
-        setDate({ from: last7Days, to: today });
+        setRange({
+          from: new Date(
+            today.getFullYear(),
+            today.getMonth(),
+            today.getDate() - 7
+          ),
+          to: today,
+        });
         break;
       case "last30days":
-        const last30Days = new Date();
-        last30Days.setDate(today.getDate() - 30);
-        setDate({ from: last30Days, to: today });
+        setRange({
+          from: new Date(
+            today.getFullYear(),
+            today.getMonth(),
+            today.getDate() - 30
+          ),
+          to: today,
+        });
         break;
       case "thisMonth":
-        const firstDayOfMonth = new Date(
-          today.getFullYear(),
-          today.getMonth(),
-          1
-        );
-        setDate({ from: firstDayOfMonth, to: today });
+        setRange({
+          from: new Date(today.getFullYear(), today.getMonth(), 1),
+          to: today,
+        });
         break;
       case "lastMonth":
-        const firstDayOfLastMonth = new Date(
-          today.getFullYear(),
-          today.getMonth() - 1,
-          1
-        );
-        const lastDayOfLastMonth = new Date(
-          today.getFullYear(),
-          today.getMonth(),
-          0
-        );
-        setDate({ from: firstDayOfLastMonth, to: lastDayOfLastMonth });
+        setRange({
+          from: new Date(today.getFullYear(), today.getMonth() - 1, 1),
+          to: new Date(today.getFullYear(), today.getMonth(), 0),
+        });
         break;
       default:
         break;
@@ -210,18 +210,18 @@ export function AgentKpiDashboard({ agent, onBack }: AgentKpiDashboardProps) {
                 variant={"outline"}
                 className={cn(
                   "w-[280px] justify-start text-left font-normal",
-                  !date && "text-muted-foreground"
+                  !range && "text-muted-foreground"
                 )}
               >
                 <CalendarIcon className="mr-2 h-4 w-4" />
-                {date?.from ? (
-                  date.to ? (
+                {range?.from ? (
+                  range.to ? (
                     <>
-                      {format(date.from, "LLL dd, y")} -{" "}
-                      {format(date.to, "LLL dd, y")}
+                      {format(range.from, "LLL dd, y")} -{" "}
+                      {format(range.to, "LLL dd, y")}
                     </>
                   ) : (
-                    format(date.from, "LLL dd, y")
+                    format(range.from, "LLL dd, y")
                   )
                 ) : (
                   <span>Pick a date</span>
@@ -229,13 +229,12 @@ export function AgentKpiDashboard({ agent, onBack }: AgentKpiDashboardProps) {
               </Button>
             </PopoverTrigger>
             <PopoverContent className="w-auto p-0" align="end">
-              <Calendar
-                initialFocus
+              <DayPicker
                 mode="range"
-                defaultMonth={date?.from}
-                selected={date}
-                onSelect={setDate}
+                selected={range}
+                onSelect={setRange}
                 numberOfMonths={2}
+                defaultMonth={range?.from}
               />
             </PopoverContent>
           </Popover>
