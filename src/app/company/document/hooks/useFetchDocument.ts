@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 // hooks/useDocuments.ts
 import { useEffect, useState } from 'react';
 import { documentData } from '../data/documentData';
