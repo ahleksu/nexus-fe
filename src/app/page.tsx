@@ -59,10 +59,16 @@ export default function Home() {
             </Link>
           </nav>
           <div className="flex items-center gap-4">
-            <Button variant="outline" className="hidden md:flex cursor-pointer" onClick={handleLoginClick}>
+            <Button
+              variant="outline"
+              className="hidden md:flex cursor-pointer"
+              onClick={handleLoginClick}
+            >
               Log In
             </Button>
-            <Button className="cursor-pointer" onClick={handleTryDemoClick}>Try Demo</Button>
+            <Button className="cursor-pointer" onClick={handleTryDemoClick}>
+              Try Demo
+            </Button>
           </div>
         </div>
       </header>
@@ -82,31 +88,31 @@ export default function Home() {
                   team to deliver exceptional customer experiences.
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4 mt-4">
-                  <Button size="lg" className="w-full sm:w-auto cursor-pointer">
+                  <Button
+                    size="lg"
+                    className="w-full sm:w-auto cursor-pointer"
+                    onClick={handleTryDemoClick}
+                  >
                     Try Demo
                   </Button>
-                    <Button
+                  <Button
                     asChild
                     size="lg"
                     variant="outline"
                     className="w-full sm:w-auto"
-                    >
+                  >
                     <Link href="#why-nexus">Learn More</Link>
-                    </Button>
+                  </Button>
                 </div>
               </div>
               <div className="relative h-[400px] w-full rounded-lg bg-gradient-to-br from-primary/30 via-primary/20 to-background overflow-hidden">
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="relative w-3/4 h-3/4">
-                    <Image
-                      src="/placeholder.svg?height=400&width=600"
-                      alt="NEXUS AI Platform"
-                      fill
-                      className="object-contain"
-                      priority
-                    />
-                  </div>
-                </div>
+                <Image
+                  src="/logo.svg"
+                  alt="NEXUS AI Platform"
+                  fill
+                  className="object-cover"
+                  priority
+                />
               </div>
             </div>
           </div>
@@ -429,16 +435,13 @@ export default function Home() {
                 customer service with NEXUS.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Button size="lg" className="w-full sm:w-auto">
-                  Try Demo
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </Button>
                 <Button
                   size="lg"
-                  variant="outline"
                   className="w-full sm:w-auto"
+                  onClick={handleTryDemoClick}
                 >
-                  Contact Sales
+                  Try Demo
+                  <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
               </div>
             </div>
