@@ -13,8 +13,10 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Nexus AI",
-  description: "Created by Team 9x3",
+  title: "NEXUS - Revolutionize Customer Service with AI",
+  description:
+    "Our LLM-powered platform automates tasks, provides instant answers, and suggests intelligent responses, allowing your team to deliver exceptional customer experiences.",
+  keywords: "customer service, AI, LLM, support platform, customer experience, automation",
 };
 
 export default function RootLayout({
