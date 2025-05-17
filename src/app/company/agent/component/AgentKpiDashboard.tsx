@@ -1,51 +1,28 @@
-"use client";
+"use client"
 
-import { useState } from "react";
-import { format } from "date-fns";
+import { useState, useMemo } from "react"
+import { format, subDays } from "date-fns"
+import { ArrowLeft, CalendarIcon, Clock, FileText, Headset, Lightbulb, Search, Smile, Star, Target } from "lucide-react"
+import { DayPicker, type DateRange } from "react-day-picker"
+import "react-day-picker/style.css"
+import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { cn } from "@/lib/utils"
+
+// Import chart components
 import {
-  ArrowLeft,
-  CalendarIcon,
-  Clock,
-  FileText,
-  Headset,
-  Lightbulb,
-  Search,
-  Smile,
-  Star,
-  Target,
-} from "lucide-react";
-import { DayPicker, type DateRange } from "react-day-picker";
-import "react-day-picker/style.css";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { cn } from "@/lib/utils";
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+  ChartLegend,
+  ChartLegendContent,
+  type ChartConfig,
+} from "@/components/ui/chart"
+import { Line, LineChart, CartesianGrid, XAxis, YAxis, PieChart, Pie, Cell } from "recharts"
 
 // Mock data for the recent interactions table
 const recentInteractions = [
@@ -112,15 +89,76 @@ const recentInteractions = [
     fcr: true,
     sentiment: "positive",
   },
-];
+]
+
+// Generate mock data for the line chart (30 days of score data)
+const generateScoreData = () => {
+  const today = new Date(2025, 4, 17) // May 17, 2025
+  const data = []
+
+  for (let i = 29; i >= 0; i--) {
+    const date = subDays(today, i)
+    const formattedDate = format(date, "MMM dd")
+
+    // Generate realistic but slightly variable data
+    // QA scores between 80-98
+    const internalQaScore = Math.floor(Math.random() * 18) + 80
+
+    // CSAT scores between 70-95, with some correlation to QA scores
+    const csatBase = internalQaScore - 10 + (Math.random() * 20 - 10)
+    const csatScore = Math.max(70, Math.min(95, Math.round(csatBase)))
+
+    data.push({
+      date: formattedDate,
+      internalQaScore,
+      csatScore,
+    })
+  }
+
+  return data
+}
+
+// Mock data for the sentiment donut chart
+const sentimentData = [
+  { sentiment: "Positive", value: 65 },
+  { sentiment: "Neutral", value: 25 },
+  { sentiment: "Negative", value: 10 },
+]
+
+// Chart configurations with violet theme colors
+const scoreChartConfig = {
+  internalQaScore: {
+    label: "Internal QA Score",
+    color: "oklch(0.5 0.25 280)", // Primary violet
+  },
+  csatScore: {
+    label: "CSAT Score",
+    color: "oklch(0.6 0.2 260)", // Blue-violet
+  },
+} satisfies ChartConfig
+
+const sentimentChartConfig = {
+  Positive: {
+    label: "Positive",
+    color: "oklch(0.5 0.25 280)", // Primary violet
+  },
+  Neutral: {
+    label: "Neutral",
+    color: "oklch(0.6 0.2 260)", // Blue-violet
+  },
+  Negative: {
+    label: "Negative",
+    color: "oklch(0.7 0.15 240)", // Blue
+  },
+} satisfies ChartConfig
 
 interface AgentKpiDashboardProps {
   agent: {
-    id: string | number;
-    name: string;
-    email: string;
-  };
-  onBack: () => void;
+    id: string | number
+    name: string
+    email: string
+  }
+  onBack: () => void
 }
 
 export function AgentKpiDashboard({ agent, onBack }: AgentKpiDashboardProps) {
@@ -128,42 +166,40 @@ export function AgentKpiDashboard({ agent, onBack }: AgentKpiDashboardProps) {
   const [range, setRange] = useState<DateRange | undefined>({
     from: new Date(2025, 3, 17), // April 17, 2025
     to: new Date(2025, 4, 17), // May 17, 2025
-  });
+  })
+
+  // Generate score data once and memoize it
+  const scoreData = useMemo(() => generateScoreData(), [])
 
   // Preset date ranges
   const handlePresetChange = (preset: string) => {
-    const today = new Date();
+    const today = new Date()
     switch (preset) {
       case "last7days":
-        setRange({ from: new Date(today.getFullYear(), today.getMonth(), today.getDate() - 7), to: today });
-        break;
+        setRange({ from: new Date(today.getFullYear(), today.getMonth(), today.getDate() - 7), to: today })
+        break
       case "last30days":
-        setRange({ from: new Date(today.getFullYear(), today.getMonth(), today.getDate() - 30), to: today });
-        break;
+        setRange({ from: new Date(today.getFullYear(), today.getMonth(), today.getDate() - 30), to: today })
+        break
       case "thisMonth":
-        setRange({ from: new Date(today.getFullYear(), today.getMonth(), 1), to: today });
-        break;
+        setRange({ from: new Date(today.getFullYear(), today.getMonth(), 1), to: today })
+        break
       case "lastMonth":
         setRange({
           from: new Date(today.getFullYear(), today.getMonth() - 1, 1),
           to: new Date(today.getFullYear(), today.getMonth(), 0),
-        });
-        break;
+        })
+        break
       default:
-        break;
+        break
     }
-  };
+  }
 
   return (
     <div className="space-y-8">
       {/* Back Button */}
       <div>
-        <Button
-          variant="ghost"
-          size="sm"
-          className="flex items-center gap-1"
-          onClick={onBack}
-        >
+        <Button variant="ghost" size="sm" className="flex items-center gap-1" onClick={onBack}>
           <ArrowLeft className="h-4 w-4" />
           Back to Agents
         </Button>
@@ -191,10 +227,7 @@ export function AgentKpiDashboard({ agent, onBack }: AgentKpiDashboardProps) {
               <Button
                 id="date"
                 variant={"outline"}
-                className={cn(
-                  "w-[280px] justify-start text-left font-normal",
-                  !range && "text-muted-foreground"
-                )}
+                className={cn("w-[280px] justify-start text-left font-normal", !range && "text-muted-foreground")}
               >
                 <CalendarIcon className="mr-2 h-4 w-4" />
                 {range?.from ? (
@@ -229,61 +262,45 @@ export function AgentKpiDashboard({ agent, onBack }: AgentKpiDashboardProps) {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">
-                Total Interactions
-              </CardTitle>
+              <CardTitle className="text-sm font-medium">Total Interactions</CardTitle>
               <Headset className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">182</div>
-              <p className="text-xs text-muted-foreground">
-                +12% from previous period
-              </p>
+              <p className="text-xs text-muted-foreground">+12% from previous period</p>
             </CardContent>
           </Card>
 
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">
-                Avg. Handle Time
-              </CardTitle>
+              <CardTitle className="text-sm font-medium">Avg. Handle Time</CardTitle>
               <Clock className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">5m 42s</div>
-              <p className="text-xs text-muted-foreground">
-                -8% from previous period
-              </p>
+              <p className="text-xs text-muted-foreground">-8% from previous period</p>
             </CardContent>
           </Card>
 
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">
-                Avg. QA Score
-              </CardTitle>
+              <CardTitle className="text-sm font-medium">Avg. QA Score</CardTitle>
               <Star className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">94/100</div>
-              <p className="text-xs text-muted-foreground">
-                +2 points from previous period
-              </p>
+              <p className="text-xs text-muted-foreground">+2 points from previous period</p>
             </CardContent>
           </Card>
 
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">
-                Avg. CSAT Score
-              </CardTitle>
+              <CardTitle className="text-sm font-medium">Avg. CSAT Score</CardTitle>
               <Smile className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">4.7/5</div>
-              <p className="text-xs text-muted-foreground">
-                +0.3 from previous period
-              </p>
+              <p className="text-xs text-muted-foreground">+0.3 from previous period</p>
             </CardContent>
           </Card>
 
@@ -294,9 +311,7 @@ export function AgentKpiDashboard({ agent, onBack }: AgentKpiDashboardProps) {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">85%</div>
-              <p className="text-xs text-muted-foreground">
-                +5% from previous period
-              </p>
+              <p className="text-xs text-muted-foreground">+5% from previous period</p>
             </CardContent>
           </Card>
         </div>
@@ -308,46 +323,34 @@ export function AgentKpiDashboard({ agent, onBack }: AgentKpiDashboardProps) {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">
-                AI Summaries Utilized
-              </CardTitle>
+              <CardTitle className="text-sm font-medium">AI Summaries Utilized</CardTitle>
               <FileText className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">160</div>
-              <p className="text-xs text-muted-foreground">
-                87.9% of total interactions
-              </p>
+              <p className="text-xs text-muted-foreground">87.9% of total interactions</p>
             </CardContent>
           </Card>
 
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">
-                Doc Searches (NEXUS)
-              </CardTitle>
+              <CardTitle className="text-sm font-medium">Doc Searches (NEXUS)</CardTitle>
               <Search className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">110</div>
-              <p className="text-xs text-muted-foreground">
-                60.4% of total interactions
-              </p>
+              <p className="text-xs text-muted-foreground">60.4% of total interactions</p>
             </CardContent>
           </Card>
 
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">
-                AI Suggestions Accepted
-              </CardTitle>
+              <CardTitle className="text-sm font-medium">AI Suggestions Accepted</CardTitle>
               <Lightbulb className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">98</div>
-              <p className="text-xs text-muted-foreground">
-                53.8% of total interactions
-              </p>
+              <p className="text-xs text-muted-foreground">53.8% of total interactions</p>
             </CardContent>
           </Card>
         </div>
@@ -355,68 +358,87 @@ export function AgentKpiDashboard({ agent, onBack }: AgentKpiDashboardProps) {
 
       {/* Performance Charts Section */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Card>
-          <CardHeader>
-            <CardTitle>Score Trends (Last 30 Days)</CardTitle>
-            <CardDescription>
-              Tracking QA and CSAT scores over time
-            </CardDescription>
+        <Card className="w-full">
+          <CardHeader className="w-full">
+            <CardTitle className="text-center">Score Trends (Last 30 Days)</CardTitle>
+            <CardDescription className="text-center">Tracking QA and CSAT scores over time</CardDescription>
           </CardHeader>
-          <CardContent className="h-80">
-            <div className="h-full w-full flex items-center justify-center bg-muted/20 rounded-md border border-dashed">
-              <div className="text-center p-6">
-                <p className="text-muted-foreground mb-2">
-                  Line Chart Placeholder
-                </p>
-                <p className="text-xs text-muted-foreground">
-                  X-Axis: Dates (May 1 - May 30)
-                </p>
-                <p className="text-xs text-muted-foreground">
-                  Y-Axis: Score (0-100)
-                </p>
-                <div className="flex justify-center gap-4 mt-4">
-                  <div className="flex items-center gap-1">
-                    <div className="w-3 h-3 rounded-full bg-blue-500"></div>
-                    <span className="text-xs">Internal QA Score</span>
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <div className="w-3 h-3 rounded-full bg-green-500"></div>
-                    <span className="text-xs">CSAT Score</span>
-                  </div>
-                </div>
-              </div>
+          <CardContent className="flex w-full justify-center">
+            <div className="w-full">
+              <ChartContainer config={scoreChartConfig} className="h-80 w-full">
+                <LineChart
+                  accessibilityLayer
+                  data={scoreData}
+                  margin={{
+                    left: 12,
+                    right: 12,
+                    top: 12,
+                    bottom: 12,
+                  }}
+                >
+                  <CartesianGrid vertical={false} />
+                  <XAxis dataKey="date" tickLine={false} axisLine={false} tickMargin={8} />
+                  <YAxis domain={[60, 100]} tickLine={false} axisLine={false} tickMargin={8} />
+                  <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
+                  <ChartLegend content={<ChartLegendContent />} />
+                  <Line
+                    dataKey="internalQaScore"
+                    type="monotone"
+                    stroke="var(--color-internalQaScore)"
+                    strokeWidth={2}
+                    dot={false}
+                  />
+                  <Line
+                    dataKey="csatScore"
+                    type="monotone"
+                    stroke="var(--color-csatScore)"
+                    strokeWidth={2}
+                    dot={false}
+                  />
+                </LineChart>
+              </ChartContainer>
             </div>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="w-full">
           <CardHeader>
-            <CardTitle>Customer Sentiment Breakdown</CardTitle>
-            <CardDescription>
+            <CardTitle className="text-center">Customer Sentiment Breakdown</CardTitle>
+            <CardDescription className="text-center">
               Distribution of customer sentiment across interactions
             </CardDescription>
           </CardHeader>
-          <CardContent className="h-80">
-            <div className="h-full w-full flex items-center justify-center bg-muted/20 rounded-md border border-dashed">
-              <div className="text-center p-6">
-                <p className="text-muted-foreground mb-4">
-                  Donut Chart Placeholder
-                </p>
-                <div className="flex flex-col gap-2 mt-4">
-                  <div className="flex items-center gap-2 justify-center">
-                    <div className="w-3 h-3 rounded-full bg-green-500"></div>
-                    <span className="text-sm">Positive: 65%</span>
-                  </div>
-                  <div className="flex items-center gap-2 justify-center">
-                    <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
-                    <span className="text-sm">Neutral: 25%</span>
-                  </div>
-                  <div className="flex items-center gap-2 justify-center">
-                    <div className="w-3 h-3 rounded-full bg-red-500"></div>
-                    <span className="text-sm">Negative: 10%</span>
-                  </div>
-                </div>
-              </div>
+          <CardContent className="flex justify-center">
+            <div className="w-full">
+              <ChartContainer config={sentimentChartConfig} className="h-80 w-full">
+                <PieChart
+                  margin={{
+                    top: 20,
+                    right: 20,
+                    bottom: 20,
+                    left: 20,
+                  }}
+                >
+                  <Pie
+                    data={sentimentData}
+                    cx="50%"
+                    cy="50%"
+                    innerRadius={60}
+                    outerRadius={90}
+                    paddingAngle={2}
+                    dataKey="value"
+                    nameKey="sentiment"
+                    label={({ value }) => `${value}%`}
+                    labelLine={false}
+                  >
+                    {sentimentData.map((entry) => (
+                      <Cell key={entry.sentiment} fill={`var(--color-${entry.sentiment})`} />
+                    ))}
+                  </Pie>
+                  <ChartTooltip cursor={false} content={<ChartTooltipContent nameKey="sentiment" />} />
+                  <ChartLegend content={<ChartLegendContent nameKey="sentiment" />} />
+                </PieChart>
+              </ChartContainer>
             </div>
           </CardContent>
         </Card>
@@ -443,17 +465,13 @@ export function AgentKpiDashboard({ agent, onBack }: AgentKpiDashboardProps) {
               <TableBody>
                 {recentInteractions.map((interaction) => (
                   <TableRow key={interaction.id}>
-                    <TableCell className="font-medium">
-                      {interaction.id}
-                    </TableCell>
+                    <TableCell className="font-medium">{interaction.id}</TableCell>
                     <TableCell>{interaction.dateTime}</TableCell>
                     <TableCell>{interaction.duration}</TableCell>
                     <TableCell>{interaction.qaScore}</TableCell>
                     <TableCell>{interaction.csat}</TableCell>
                     <TableCell>
-                      <Badge
-                        variant={interaction.fcr ? "default" : "destructive"}
-                      >
+                      <Badge variant={interaction.fcr ? "default" : "destructive"}>
                         {interaction.fcr ? "Yes" : "No"}
                       </Badge>
                     </TableCell>
@@ -463,12 +481,11 @@ export function AgentKpiDashboard({ agent, onBack }: AgentKpiDashboardProps) {
                           interaction.sentiment === "positive"
                             ? "default"
                             : interaction.sentiment === "negative"
-                            ? "destructive"
-                            : "outline"
+                              ? "destructive"
+                              : "outline"
                         }
                       >
-                        {interaction.sentiment.charAt(0).toUpperCase() +
-                          interaction.sentiment.slice(1)}
+                        {interaction.sentiment.charAt(0).toUpperCase() + interaction.sentiment.slice(1)}
                       </Badge>
                     </TableCell>
                     <TableCell>
@@ -489,5 +506,5 @@ export function AgentKpiDashboard({ agent, onBack }: AgentKpiDashboardProps) {
         </Card>
       </div>
     </div>
-  );
+  )
 }
