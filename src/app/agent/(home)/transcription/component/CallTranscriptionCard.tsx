@@ -5,7 +5,7 @@ type Props = {
 }
 const CallTranscriptionCard = (props: Props) => {
     const {data} = props;
-    const {id, timestamp, agent_name, content, role, sentiment} = data;
+    const {timestamp, agent_name, content, role, sentiment} = data;
 
     return(
         <div

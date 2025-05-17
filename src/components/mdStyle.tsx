@@ -56,6 +56,6 @@ export const markdownComponents: Components = {
     hr: ({node, ...props}) => <hr className="my-3 border-gray-200" {...props} />,
 
     // Images
-    img: ({node, ...props}) => <img className="text-xs max-w-full h-auto my-2" {...props} />,
+    img: ({node, ...props}) => <img className="text-xs max-w-full h-auto my-2" {...props} alt={"test"} />,
 };
 

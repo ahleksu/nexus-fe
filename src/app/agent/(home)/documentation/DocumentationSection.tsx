@@ -1,4 +1,3 @@
-import {ScrollArea} from "@/components/ui/scroll-area";
 import DocumentCard from "@/app/agent/(home)/documentation/component/DocumentCard";
 import {usefetchDocumentHooks} from "@/app/agent/(home)/documentation/hooks/usefetchDocumentHooks";
 

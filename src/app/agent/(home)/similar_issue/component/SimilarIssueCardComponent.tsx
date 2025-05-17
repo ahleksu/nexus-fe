@@ -8,7 +8,7 @@ type SimilarIssueCardProps = {
 
 const SimilarIssueCard = (props: SimilarIssueCardProps) => {
     const {issue} = props;
-    const {title, content, agent_name, created_at } = issue;
+    const {title, content, agent_name } = issue;
 
     return (
         <div className="flex flex-col w-full p-4 border rounded-lg shadow-sm hover:shadow-md transition-shadow">
