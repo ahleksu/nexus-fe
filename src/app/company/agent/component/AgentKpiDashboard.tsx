@@ -135,30 +135,13 @@ export function AgentKpiDashboard({ agent, onBack }: AgentKpiDashboardProps) {
     const today = new Date();
     switch (preset) {
       case "last7days":
-        setRange({
-          from: new Date(
-            today.getFullYear(),
-            today.getMonth(),
-            today.getDate() - 7
-          ),
-          to: today,
-        });
+        setRange({ from: new Date(today.getFullYear(), today.getMonth(), today.getDate() - 7), to: today });
         break;
       case "last30days":
-        setRange({
-          from: new Date(
-            today.getFullYear(),
-            today.getMonth(),
-            today.getDate() - 30
-          ),
-          to: today,
-        });
+        setRange({ from: new Date(today.getFullYear(), today.getMonth(), today.getDate() - 30), to: today });
         break;
       case "thisMonth":
-        setRange({
-          from: new Date(today.getFullYear(), today.getMonth(), 1),
-          to: today,
-        });
+        setRange({ from: new Date(today.getFullYear(), today.getMonth(), 1), to: today });
         break;
       case "lastMonth":
         setRange({
@@ -217,8 +200,7 @@ export function AgentKpiDashboard({ agent, onBack }: AgentKpiDashboardProps) {
                 {range?.from ? (
                   range.to ? (
                     <>
-                      {format(range.from, "LLL dd, y")} -{" "}
-                      {format(range.to, "LLL dd, y")}
+                      {format(range.from, "LLL dd, y")} - {format(range.to, "LLL dd, y")}
                     </>
                   ) : (
                     format(range.from, "LLL dd, y")
