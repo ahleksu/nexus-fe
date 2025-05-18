@@ -3,6 +3,15 @@ import DocumentCard from "@/app/agent/(home)/documentation/component/DocumentCar
 import { useEffect, useState } from "react";
 import { useFetchDocumentHooks } from "@/app/agent/(home)/documentation/hooks/useFetchDocumentHooks";
 
+type Document = {
+    id: string;
+    title: string;
+    content: string;
+    createdAt: string;
+    type: string;
+    jobId?: string;
+};
+
 type DocumentationSectionProps = {
     refreshTrigger?: boolean;
     lastJobId?: string | null;
@@ -12,17 +21,54 @@ const DocumentationSection = ({ refreshTrigger, lastJobId }: DocumentationSectio
     const { documents, loading, error, refetch } = useFetchDocumentHooks();
     const [pollingJobId, setPollingJobId] = useState<string | null>(null);
     const [isPolling, setIsPolling] = useState(false);
-    const [hasResponse, setHasResponse] = useState(false);
+    const [savedDocs, setSavedDocs] = useState<Document[]>([]);
 
-    // Handle initial refresh trigger
+    // Handle initial refresh trigger and load saved docs
     useEffect(() => {
         if (refreshTrigger && lastJobId) {
             setPollingJobId(lastJobId);
             setIsPolling(true);
-            setHasResponse(false);
+
+            // Load from localStorage
+            try {
+                const saved = localStorage.getItem(`docs-${lastJobId}`);
+                if (saved) {
+                    const parsed = JSON.parse(saved) as Document[];
+                    setSavedDocs(parsed);
+                }
+            } catch (e) {
+                console.error("Failed to load from localStorage", e);
+            }
+
             refetch(lastJobId);
         }
     }, [refreshTrigger, lastJobId, refetch]);
+
+    // Save new documents to state and localStorage
+    useEffect(() => {
+        if (documents.length > 0 && pollingJobId) {
+            const newDoc = {
+                ...documents[0],
+                jobId: pollingJobId // Include jobId in the document
+            };
+
+            setSavedDocs(prev => {
+                // Check if this content already exists
+                const exists = prev.some(doc => doc.content === newDoc.content);
+                if (exists) return prev;
+
+                // Save to localStorage
+                try {
+                    const updated = [...prev, newDoc];
+                    localStorage.setItem(`docs-${pollingJobId}`, JSON.stringify(updated));
+                    return updated;
+                } catch (e) {
+                    console.error("Failed to save to localStorage", e);
+                    return prev;
+                }
+            });
+        }
+    }, [documents, pollingJobId]);
 
     // Polling effect
     useEffect(() => {
@@ -31,34 +77,24 @@ const DocumentationSection = ({ refreshTrigger, lastJobId }: DocumentationSectio
         const interval = setInterval(async () => {
             try {
                 await refetch(pollingJobId);
-
-                // Check if we have a valid document now
-                if (documents.length > 0 && documents[0].content) {
-                    setHasResponse(true);
-                    setIsPolling(false);
-                }
             } catch (error) {
                 console.error("Polling error:", error);
                 setIsPolling(false);
             }
         }, 5000);
 
-        // Clean up interval if we have response or component unmounts
-        if (hasResponse) {
-            clearInterval(interval);
-        }
-
         return () => clearInterval(interval);
-    }, [pollingJobId, isPolling, refetch, documents, hasResponse]);
+    }, [pollingJobId, isPolling, refetch]);
 
-    // Stop polling when we have a response
-    useEffect(() => {
-        if (hasResponse) {
-            setIsPolling(false);
+    // Combine and filter documents
+    const allDocuments = [...savedDocs];
+    if (documents.length > 0) {
+        const newDoc = documents[0];
+        if (!allDocuments.some(doc => doc.content === newDoc.content)) {
+            allDocuments.push(newDoc);
         }
-    }, [hasResponse]);
+    }
 
-    if (loading) return <div>Loading documents...</div>;
     if (error) return <div>Error: {error}</div>;
 
     return (
@@ -66,9 +102,23 @@ const DocumentationSection = ({ refreshTrigger, lastJobId }: DocumentationSectio
             <h4 className="text-sm px-2 py-1 text-slate-700 font-bold bg-blue-50 w-fit rounded-2xl">
                 Documentation
             </h4>
+            {
+                loading ? (
+                    <div className="flex items-center justify-center w-full h-full">
+                        <p className="text-sm text-gray-500">Loading...</p>
+                    </div>
+                ) : allDocuments.length === 0 ? (
+                    <div className="flex items-center justify-center w-full h-full">
+                        <p className="text-gray-500">No documents available</p>
+                    </div>
+                ) : null
+            }
             <div className="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-2 gap-4">
-                {documents.map((doc) => (
-                    <DocumentCard key={doc.id} doc={doc} />
+                {allDocuments.map((doc, index) => (
+                    <DocumentCard
+                        key={`${doc.id}-${index}-${doc.jobId || ''}`}
+                        doc={doc}
+                    />
                 ))}
             </div>
         </div>
