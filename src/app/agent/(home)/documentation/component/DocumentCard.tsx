@@ -7,7 +7,7 @@ type DocumentCardProps = {
 }
 
 const DocumentCard = ({ doc }: DocumentCardProps) => {
-    const { title, content, rank } = doc;
+    const { title, content } = doc;
 
     return (
         <div className="flex flex-col justify-between w-full h-full bg-white rounded-lg p-4 border hover:shadow-md transition-shadow">
@@ -20,9 +20,7 @@ const DocumentCard = ({ doc }: DocumentCardProps) => {
                     {content}
                 </ReactMarkdown>
             </div>
-            <div className="flex justify-between items-center mt-2">
-                <span className="text-xs text-gray-500">Rank: {rank}</span>
-            </div>
+
         </div>
     );
 };

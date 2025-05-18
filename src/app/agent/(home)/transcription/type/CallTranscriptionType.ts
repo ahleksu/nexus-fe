@@ -4,6 +4,6 @@ export type CallTranscriptionType = {
     agent_name: string;
     content: string;
     id: string;
-    role: 'agent' | 'customer';
+    role?: 'agent' | 'customer';
     sentiment?: 'positive' | 'neutral' | 'negative';
 }
