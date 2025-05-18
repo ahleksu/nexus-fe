@@ -7,7 +7,11 @@ import { UploadAudioDialog } from "@/app/agent/(home)/transcription/component/Up
 import { useEffect, useState } from "react";
 import { CallTranscriptionType } from "@/app/agent/(home)/transcription/type/CallTranscriptionType";
 
-const CallTranscription = () => {
+type CallTranscriptionProps = {
+    onUploadSuccess?: (job_id: string) => void;
+};
+
+const CallTranscription = ({ onUploadSuccess }: CallTranscriptionProps) => {
     const [transcriptions, setTranscriptions] = useState<CallTranscriptionType[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -17,6 +21,8 @@ const CallTranscription = () => {
     const handleUploadSuccess = (job_id: string) => {
         setActiveJobId(job_id);
         setIsPolling(true);
+        if (onUploadSuccess) onUploadSuccess(job_id);
+
     };
 
     useEffect(() => {
