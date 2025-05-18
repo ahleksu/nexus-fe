@@ -1,4 +1,5 @@
 import {CallTranscriptionType} from "@/app/agent/(home)/transcription/type/CallTranscriptionType";
+import {formatTimestamp} from "@/app/agent/(home)/transcription/formatTimeStamp";
 
 type Props = {
     data: CallTranscriptionType;
@@ -17,15 +18,16 @@ const CallTranscriptionCard = (props: Props) => {
         >
             <div className="flex justify-between items-center mb-1">
                                 <span className="text-xs font-medium text-gray-500">
-                                    {timestamp}
+                                    {formatTimestamp(timestamp)}
                                 </span>
                 <span className={`text-xs px-2 py-1 rounded ${
                     role === 'agent'
                         ? 'bg-blue-100 text-blue-800'
                         : 'bg-gray-200 text-gray-800'
                 }`}>
-                                    {role === 'agent' ? agent_name : 'Customer'}
-                                </span>
+
+                    {agent_name}
+                                            </span>
             </div>
             <p className="text-sm">{content}</p>
             {sentiment && (
